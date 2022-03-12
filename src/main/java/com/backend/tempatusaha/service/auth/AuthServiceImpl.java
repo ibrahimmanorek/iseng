@@ -6,19 +6,19 @@ import com.backend.tempatusaha.dto.request.SignUpRequest;
 import com.backend.tempatusaha.dto.response.JwtResponse;
 import com.backend.tempatusaha.dto.response.Response;
 import com.backend.tempatusaha.dto.response.TokenRefreshResponse;
-import com.backend.tempatusaha.entity.Account;
-import com.backend.tempatusaha.entity.ERole;
-import com.backend.tempatusaha.entity.RefreshToken;
-import com.backend.tempatusaha.entity.Role;
+import com.backend.tempatusaha.entity.*;
 import com.backend.tempatusaha.exception.ExceptionResponse;
-import com.backend.tempatusaha.exception.TokenRefreshException;
 import com.backend.tempatusaha.repository.AccountRepository;
+import com.backend.tempatusaha.repository.OtpRepository;
 import com.backend.tempatusaha.repository.RoleRepository;
+import com.backend.tempatusaha.repository.SendEmailRepository;
 import com.backend.tempatusaha.security.jwt.JwtUtils;
 import com.backend.tempatusaha.service.users.RefreshTokenService;
 import com.backend.tempatusaha.service.users.UserDetailsImpl;
+import com.backend.tempatusaha.utils.Helper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,6 +52,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private RefreshTokenService refreshTokenService;
+
+    @Autowired
+    private SendEmailRepository sendEmailRepository;
+
+    @Autowired
+    private OtpRepository otpRepository;
+
+    @Value("${spring.mail.username}")
+    private String emailFrom;
 
     @Override
     public Response save(SignUpRequest signUpRequest) {
@@ -99,6 +108,20 @@ public class AuthServiceImpl implements AuthService {
                 .isAktif(1)
                 .role(roles)
                 .build());
+
+        Otp otp = otpRepository.save(Otp.builder()
+                .account(account)
+                .otp(Helper.randomString())
+                .build());
+
+        sendEmailRepository.save(SendEmail.builder()
+                .emailTo(signUpRequest.getEmail())
+                .emailFrom(emailFrom)
+                .tipeEmail("register")
+                .account(account)
+                .otp(otp)
+                .build());
+
         return Response.builder()
                 .success(true)
                 .message("successfully")
