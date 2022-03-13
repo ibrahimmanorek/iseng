@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -56,9 +55,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Response verifyEmail(VerifyEmailRequest verifyEmailRequest) {
-        if(verifyEmailRequest.getOtp().length() != 6){
+        if(verifyEmailRequest.getOtp().length() != 6)
             throw new ExceptionResponse("OTP 6 CHAR");
-        }
 
         Account account = accountRepository.findById(verifyEmailRequest.getId())
                 .orElseThrow(() -> new ExceptionResponse("ACCOUNT ID TIDAK VALID"));
@@ -66,9 +64,8 @@ public class AccountServiceImpl implements AccountService {
         Otp otp = otpRepository.findByAccountIdAndFlag(verifyEmailRequest.getId(), 0)
                 .orElseThrow(() -> new ExceptionResponse("OTP NOT FOUND"));
 
-        if(!verifyEmailRequest.getOtp().equals(otp.getOtp())){
+        if(!verifyEmailRequest.getOtp().equals(otp.getOtp()))
             throw new ExceptionResponse("OTP TIDAK VALID");
-        }
 
         account.setIsAktif(1);
         account.setUpdatedDate(LocalDateTime.now());

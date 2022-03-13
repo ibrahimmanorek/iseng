@@ -64,18 +64,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Response save(SignUpRequest signUpRequest) {
-        if(accountRepository.existsByUsername(signUpRequest.getUsername())){
+        if(accountRepository.existsByUsername(signUpRequest.getUsername()))
             throw new ExceptionResponse("username is already taken !!");
-        }
 
-        if(accountRepository.existsByEmail(signUpRequest.getEmail())){
+        if(accountRepository.existsByEmail(signUpRequest.getEmail()))
             throw new ExceptionResponse("email is already taken !!");
-        }
 
         Set<String> strRoles = signUpRequest.getRole();
-        if(strRoles == null){
+        if(strRoles == null)
             throw new ExceptionResponse("Role is required !!");
-        }
+
         Set<Role> roles = new HashSet<>();
         strRoles.forEach(role -> {
             switch (role){
