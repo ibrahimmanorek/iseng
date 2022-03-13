@@ -105,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .phoneNumber(signUpRequest.getPhoneNumber())
                 .address(signUpRequest.getAddress())
-                .isAktif(1)
+                .isAktif(0)
                 .role(roles)
                 .build());
 

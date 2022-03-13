@@ -1,5 +1,6 @@
 package com.backend.tempatusaha.controller;
 
+import com.backend.tempatusaha.dto.request.VerifyEmailRequest;
 import com.backend.tempatusaha.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +22,10 @@ public class AccountController {
     @GetMapping("/getAccountId/{id}")
     public ResponseEntity<?> getAccountId(@PathVariable("id") long id){
         return ResponseEntity.ok().body(accountService.getByAccountId(id));
+    }
+
+    @PostMapping("/verify/email")
+    public ResponseEntity<?> verifyEmail(@RequestBody VerifyEmailRequest verifyEmailRequest){
+        return ResponseEntity.ok().body(accountService.verifyEmail(verifyEmailRequest));
     }
 }
