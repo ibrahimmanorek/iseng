@@ -25,8 +25,8 @@ public class SendEmail {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "account", referencedColumnName = "id")
-    private Account account;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account accountId;
 
     @Column(name = "email_to", nullable = false, length = 150)
     private String emailTo;
@@ -41,8 +41,8 @@ public class SendEmail {
     private String tipeEmail;
 
     @ManyToOne
-    @JoinColumn(name = "otp", referencedColumnName = "id")
-    private Otp otp;
+    @JoinColumn(name = "otp_id", referencedColumnName = "id")
+    private Otp otpId;
 
     @Column(name = "info", columnDefinition = "TEXT")
     private String info;

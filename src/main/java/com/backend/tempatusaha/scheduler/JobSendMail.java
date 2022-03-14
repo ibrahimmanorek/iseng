@@ -35,7 +35,7 @@ public class JobSendMail {
         List<SendEmail> sendEmailList = sendEmailRepository.findAllByFlag(0);
         log.info("total send mail : {}", sendEmailList.size());
         sendEmailList.forEach(s -> {
-            Optional<Otp> optionalOtp = otpRepository.findByAccountIdAndFlag(s.getAccount().getId(), 0);
+            Optional<Otp> optionalOtp = otpRepository.findByAccountIdAndFlag(s.getAccountId().getId(), 0);
             if(optionalOtp.isPresent()){
                 sendMail(s.getEmailTo(), s.getEmailFrom(), optionalOtp.get().getOtp());
             } else {

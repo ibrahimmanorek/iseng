@@ -23,8 +23,8 @@ public class Otp {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "account", referencedColumnName = "id")
-    private Account account;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account accountId;
 
     @Column(name = "otp", nullable = false, length = 6)
     private String otp;

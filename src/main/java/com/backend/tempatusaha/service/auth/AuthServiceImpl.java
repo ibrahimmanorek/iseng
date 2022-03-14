@@ -108,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
                 .build());
 
         Otp otp = otpRepository.save(Otp.builder()
-                .account(account)
+                .accountId(account)
                 .otp(Helper.randomString())
                 .build());
 
@@ -116,8 +116,8 @@ public class AuthServiceImpl implements AuthService {
                 .emailTo(signUpRequest.getEmail())
                 .emailFrom(emailFrom)
                 .tipeEmail("register")
-                .account(account)
-                .otp(otp)
+                .accountId(account)
+                .otpId(otp)
                 .build());
 
         return Response.builder()
@@ -158,7 +158,7 @@ public class AuthServiceImpl implements AuthService {
     public Response refreshToken(RefreshTokenRequest refreshTokenRequest) {
         String tokenRefresh = refreshTokenService.findByToken(refreshTokenRequest.getRefreshToken())
                 .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getAccount)
+                .map(RefreshToken::getAccountId)
                 .map(user -> {
                     String token = jwtUtils.generateTokenFromUsername(user.getUsername());
                     return token;
