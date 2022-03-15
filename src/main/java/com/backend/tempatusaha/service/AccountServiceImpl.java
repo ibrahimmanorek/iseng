@@ -61,6 +61,9 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(verifyEmailRequest.getId())
                 .orElseThrow(() -> new ExceptionResponse("ACCOUNT ID TIDAK VALID"));
 
+        account = accountRepository.findByIdAndIsAktif(verifyEmailRequest.getId(), 1)
+                .orElseThrow(() -> new ExceptionResponse("ACCOUNT ID TIDAK AKTIF"));
+
         Otp otp = otpRepository.findByAccountIdAndFlag(verifyEmailRequest.getId(), 0)
                 .orElseThrow(() -> new ExceptionResponse("OTP NOT FOUND"));
 
