@@ -24,6 +24,10 @@ public class Lapangan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "kategori_id", referencedColumnName = "id")
+    private Kategori kategoriId;
+
     @Column(name = "nama_lapangan", nullable = false, length = 150)
     private String namaLapangan;
 
