@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface LapanganRepository extends JpaRepository<Lapangan, Long> {
-    Optional<Lapangan> findByIdAndIsAktif(long id, int isaktif);
-    Optional<Lapangan> findByPropinsiIdAndIsAktif(long id, int isaktif);
-    Optional<Lapangan> findByPropinsiIdAndKotaIdAndIsAktif(long propinsiId, long kotaId, int isaktif);
-    Optional<Lapangan> findByPropinsiIdAndKotaIdAndKecamatanIdAndIsAktif(long propinsiId, long kotaId, long kecamatanId, int isaktif);
-    Optional<Lapangan> findByPropinsiIdAndKotaIdAndKecamatanIdAndKelurahanIdAndIsAktif(long propinsiId, long kotaId, long kecamatanId, long kelurahanId, int isaktif);
+    Optional<Lapangan> findByIdAndIsaktif(long id, int isaktif);
+    Optional<Lapangan> findByPropinsiIdAndIsaktif(long id, int isaktif);
+    Optional<Lapangan> findByPropinsiIdAndKotaIdAndIsaktif(long propinsiId, long kotaId, int isaktif);
+    Optional<Lapangan> findByPropinsiIdAndKotaIdAndKecamatanIdAndIsaktif(long propinsiId, long kotaId, long kecamatanId, int isaktif);
+    Optional<Lapangan> findByPropinsiIdAndKotaIdAndKecamatanIdAndKelurahanIdAndIsaktif(long propinsiId, long kotaId, long kecamatanId, long kelurahanId, int isaktif);
 }

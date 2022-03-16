@@ -66,7 +66,7 @@ public class Lapangan {
     private String longitude;
 
     @Column(name = "isaktif", nullable = false, columnDefinition = "integer default 1")
-    private int isAktif;
+    private int isaktif;
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;

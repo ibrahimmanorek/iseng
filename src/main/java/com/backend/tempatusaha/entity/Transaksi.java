@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder
@@ -25,12 +24,12 @@ public class Transaksi {
     private Lapangan lapanganId;
 
     @ManyToOne
-    @JoinColumn(name = "katalog_id", referencedColumnName = "id")
-    private Katalog katalogId;
+    @JoinColumn(name = "lapangan_detail_id", referencedColumnName = "id")
+    private LapanganDetail lapanganDetailId;
 
     @ManyToOne
-    @JoinColumn(name = "katalog_detail_id", referencedColumnName = "id")
-    private Katalog katalogDetailId;
+    @JoinColumn(name = "lapangan_order_id", referencedColumnName = "id")
+    private LapanganOrder lapanganOrderId;
 
     @Column(name = "status", length = 100)
     private String status;

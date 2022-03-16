@@ -89,7 +89,7 @@ public class LapanganServiceImpl implements LapanganService {
                         .kotaId(kota)
                         .kecamatanId(kecamatan)
                         .kelurahanId(kelurahan)
-                        .isAktif(1)
+                        .isaktif(1)
                         .createdDate(LocalDateTime.now())
                         .build()))
                 .build();
@@ -98,7 +98,7 @@ public class LapanganServiceImpl implements LapanganService {
     @Override
     public Response update(long id, LapanganRequest request) {
         Lapangan lapangan = lapanganRepository.findById(id).orElseThrow(() -> new ExceptionResponse("Data Not Found"));
-        lapangan = lapanganRepository.findByIdAndIsAktif(id, 1).orElseThrow(() -> new ExceptionResponse("Lapangan Tidak Aktif"));
+        lapangan = lapanganRepository.findByIdAndIsaktif(id, 1).orElseThrow(() -> new ExceptionResponse("Lapangan Tidak Aktif"));
         lapangan.setKategoriId(Kategori.builder().id(request.getKategoriId()).build());
         lapangan.setNamaLapangan(request.getNamaLapangan());
         lapangan.setNamaPic(request.getNamaPic());

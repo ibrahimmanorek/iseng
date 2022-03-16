@@ -7,15 +7,17 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "katalog_detail")
-public class KatalogDetail {
+@Table(name = "lapangan_detail",
+indexes = {
+        @Index(columnList = "tipe_lapangan")
+})
+public class LapanganDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,18 +26,17 @@ public class KatalogDetail {
     @JoinColumn(name = "lapangan_id", referencedColumnName = "id")
     private Lapangan lapanganId;
 
-    @ManyToOne
-    @JoinColumn(name = "katalog_id", referencedColumnName = "id")
-    private Katalog katalogId;
+    @Column(name = "tipe_lapangan", nullable = false, length = 150)
+    private String tipeLapangan;
 
-    @Column(name = "tanggal_jam")
-    private Date tanggalJam;
+    @Column(name = "pict1", length = 150)
+    private String pict1;
 
-    @Column(name = "status", length = 100)
-    private String status;
+    @Column(name = "pict2", length = 150)
+    private String pict2;
 
-    @Column(name = "harga")
-    private Long harga;
+    @Column(name = "pict3", length = 150)
+    private String pict3;
 
     @Column(name = "isaktif", columnDefinition = "integer default 1")
     private Integer isaktif;
