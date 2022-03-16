@@ -1,5 +1,6 @@
 package com.backend.tempatusaha.service.lapangan;
 
+import com.backend.tempatusaha.dto.request.DistanceRequest;
 import com.backend.tempatusaha.dto.request.LapanganRequest;
 import com.backend.tempatusaha.dto.response.PageResponse;
 import com.backend.tempatusaha.dto.response.Response;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -44,7 +46,7 @@ public class LapanganServiceImpl implements LapanganService {
         PageResponse pageResponse = PageResponse.builder()
                 .totalAllData(lapanganPage.getTotalElements())
                 .totalPage(lapanganPage.getTotalPages())
-                .currentPage(lapanganPage.getNumber()+1)
+                .currentPage(lapanganPage.getNumber() + 1)
                 .details(lapanganPage.getContent())
                 .build();
         return Response.builder()
@@ -115,6 +117,24 @@ public class LapanganServiceImpl implements LapanganService {
                 .success(true)
                 .message("successfully")
                 .data(lapanganRepository.save(lapangan))
+                .build();
+    }
+
+    @Override
+    public Response distance(int page, int size, DistanceRequest request) {
+        int totalPage = page * 10;
+        int totalData = lapanganRepository.findCountLapanganWithDistance(request.getLatitude(), request.getLongitude(), request.getDistance());
+        List<Lapangan> lapanganPage = lapanganRepository.findLapanganWithInDistance(request.getLatitude(), request.getLongitude(), request.getDistance(), totalPage, size);
+        PageResponse pageResponse = PageResponse.builder()
+                .totalAllData(totalData)
+                .totalPage(page)
+                .currentPage(page + 1)
+                .details(lapanganPage)
+                .build();
+        return Response.builder()
+                .success(true)
+                .message("successfully")
+                .data(pageResponse)
                 .build();
     }
 }
