@@ -28,6 +28,22 @@ public class Lapangan {
     @JoinColumn(name = "kategori_id", referencedColumnName = "id")
     private Kategori kategoriId;
 
+    @ManyToOne
+    @JoinColumn(name = "propinsi_id", referencedColumnName = "id")
+    private Propinsi propinsiId;
+
+    @ManyToOne
+    @JoinColumn(name = "kota_id", referencedColumnName = "id")
+    private Kota kotaId;
+
+    @ManyToOne
+    @JoinColumn(name = "kecamatan_id", referencedColumnName = "id")
+    private Kecamatan kecamatanId;
+
+    @ManyToOne
+    @JoinColumn(name = "kelurahan_id", referencedColumnName = "id")
+    private Kelurahan kelurahanId;
+
     @Column(name = "nama_lapangan", nullable = false, length = 150)
     private String namaLapangan;
 
