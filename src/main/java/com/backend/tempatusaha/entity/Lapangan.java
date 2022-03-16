@@ -60,10 +60,10 @@ public class Lapangan {
     private String address;
 
     @Column(name = "latitude", nullable = false, length = 50)
-    private Long latitude;
+    private String latitude;
 
     @Column(name = "longitude", nullable = false, length = 50)
-    private Long longitude;
+    private String longitude;
 
     @Column(name = "isaktif", nullable = false, columnDefinition = "integer default 1")
     private int isAktif;

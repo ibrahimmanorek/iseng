@@ -15,7 +15,11 @@ public class LapanganRequest {
     private String phoneNumber;
     private String email;
     private String address;
-    private Long latitude;
-    private Long longitude;
+    private String latitude;
+    private String longitude;
     private Long kategoriId;
+    private Long propinsiId;
+    private Long kotaId;
+    private Long kecamatanId;
+    private Long kelurahanId;
 }
