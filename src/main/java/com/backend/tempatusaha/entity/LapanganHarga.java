@@ -13,29 +13,24 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "lapangan_detail",
-indexes = {
-        @Index(columnList = "tipe_lapangan")
-})
-public class LapanganDetail {
+@Table(name = "lapangan_harga")
+public class LapanganHarga {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "lapangan_images_id", referencedColumnName = "id")
-    private LapanganImages lapanganImagesId;
+    @JoinColumn(name = "lapangan_detail_id", referencedColumnName = "id")
+    private LapanganDetail lapanganDetailId;
 
-    @ManyToOne
-    @JoinColumn(name = "lapangan_harga_id", referencedColumnName = "id")
-    private LapanganHarga lapanganHargaId;
+    @Column(name = "harga")
+    private Long harga;
 
-    @ManyToOne
-    @JoinColumn(name = "lapangan_libur_id", referencedColumnName = "id")
-    private LapanganLibur lapanganLibur;
+    @Column(name = "jam_buka", columnDefinition = "TIME")
+    private LocalDateTime jamBuka;
 
-    @Column(name = "tipe_lapangan", nullable = false, length = 150)
-    private String tipeLapangan;
+    @Column(name = "jam_tutup", columnDefinition = "TIME")
+    private LocalDateTime jamTutup;
 
     @Column(name = "isaktif", columnDefinition = "integer default 1")
     private Integer isaktif;

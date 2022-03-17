@@ -70,32 +70,32 @@ public class AuthServiceImpl implements AuthService {
         if(accountRepository.existsByEmail(signUpRequest.getEmail()))
             throw new ExceptionResponse("email is already taken !!");
 
-        Set<String> strRoles = signUpRequest.getRole();
-        if(strRoles == null)
-            throw new ExceptionResponse("Role is required !!");
-
-        Set<Role> roles = new HashSet<>();
-        strRoles.forEach(role -> {
-            switch (role){
-                case "admin" :
-                case "ADMIN" :
-                    Role admin = roleRepository.findByRoleNameAndIsAktif(ERole.ADMIN, 1)
-                            .orElseThrow(() -> new ExceptionResponse("Role Not Found !!"));
-                    roles.add(admin);
-                    break;
-                case "member" :
-                case "MEMBER" :
-                    Role member = roleRepository.findByRoleNameAndIsAktif(ERole.MEMBER, 1)
-                            .orElseThrow(() -> new ExceptionResponse("Error : Role Not Found !!"));
-                    roles.add(member);
-                    break;
-                default:
-                    Role partner = roleRepository.findByRoleNameAndIsAktif(ERole.PARTNER, 1)
-                            .orElseThrow(() -> new ExceptionResponse("Error : Role Not Found !!"));
-                    roles.add(partner);
-                    break;
-            }
-        });
+//        Set<String> strRoles = signUpRequest.getRole();
+//        if(strRoles == null)
+//            throw new ExceptionResponse("Role is required !!");
+//
+//        Set<Role> roles = new HashSet<>();
+//        strRoles.forEach(role -> {
+//            switch (role){
+//                case "admin" :
+//                case "ADMIN" :
+//                    Role admin = roleRepository.findByRoleNameAndIsAktif(ERole.ADMIN, 1)
+//                            .orElseThrow(() -> new ExceptionResponse("Role Not Found !!"));
+//                    roles.add(admin);
+//                    break;
+//                case "member" :
+//                case "MEMBER" :
+//                    Role member = roleRepository.findByRoleNameAndIsAktif(ERole.MEMBER, 1)
+//                            .orElseThrow(() -> new ExceptionResponse("Error : Role Not Found !!"));
+//                    roles.add(member);
+//                    break;
+//                default:
+//                    Role partner = roleRepository.findByRoleNameAndIsAktif(ERole.PARTNER, 1)
+//                            .orElseThrow(() -> new ExceptionResponse("Error : Role Not Found !!"));
+//                    roles.add(partner);
+//                    break;
+//            }
+//        });
 
         Account account = accountRepository.save(Account.builder()
                 .username(signUpRequest.getUsername())
@@ -104,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
                 .phoneNumber(signUpRequest.getPhoneNumber())
                 .address(signUpRequest.getAddress())
                 .isAktif(0)
-                .role(roles)
+                .roleId(Role.builder().id(signUpRequest.getRoleId()).build())
                 .build());
 
         Otp otp = otpRepository.save(Otp.builder()

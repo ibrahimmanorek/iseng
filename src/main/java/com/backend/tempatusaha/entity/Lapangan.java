@@ -44,6 +44,18 @@ public class Lapangan {
     @JoinColumn(name = "kelurahan_id", referencedColumnName = "id")
     private Kelurahan kelurahanId;
 
+    @ManyToOne
+    @JoinColumn(name = "lapangan_detail_id", referencedColumnName = "id")
+    private LapanganDetail lapanganDetailId;
+
+    @ManyToOne
+    @JoinColumn(name = "lapangan_fasilitas_id", referencedColumnName = "id")
+    private LapanganFasilitas lapanganFasilitasId;
+
+    @ManyToOne
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account accountId;
+
     @Column(name = "nama_lapangan", nullable = false, length = 150)
     private String namaLapangan;
 
@@ -64,6 +76,15 @@ public class Lapangan {
 
     @Column(name = "longitude", nullable = false, length = 50)
     private String longitude;
+
+    @Column(name = "jam_buka", columnDefinition = "TIME")
+    private LocalDateTime jamBuka;
+
+    @Column(name = "jam_tutup", columnDefinition = "TIME")
+    private LocalDateTime jamTutup;
+
+    @Column(name = "pict", length = 255)
+    private String pict;
 
     @Column(name = "isaktif", nullable = false, columnDefinition = "integer default 1")
     private int isaktif;

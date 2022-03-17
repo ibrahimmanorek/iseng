@@ -27,9 +27,11 @@ public class Transaksi {
     @JoinColumn(name = "lapangan_detail_id", referencedColumnName = "id")
     private LapanganDetail lapanganDetailId;
 
-    @ManyToOne
-    @JoinColumn(name = "lapangan_order_id", referencedColumnName = "id")
-    private LapanganOrder lapanganOrderId;
+    @Column(name = "invoice", length = 50)
+    private String invoice;
+
+    @Column(name = "kode_unik")
+    private int kodeUnik;
 
     @Column(name = "status", length = 100)
     private String status;
@@ -37,11 +39,17 @@ public class Transaksi {
     @Column(name = "harga")
     private Long harga;
 
+    @Column(name = "promo_id")
+    private Long promoId;
+
     @Column(name = "admin")
     private Long admin;
 
     @Column(name = "payment_by")
     private String paymentBy;
+
+    @Column(name = "date_payment")
+    private LocalDateTime datePayment;
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;

@@ -6,10 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
@@ -36,16 +33,19 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	public static UserDetailsImpl build(Account account) {
-		List<GrantedAuthority> authorities = account.getRole().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
-				.collect(Collectors.toList());
+//		List<GrantedAuthority> authorities = account.getRole().stream()
+//				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
+//				.collect(Collectors.toList());
+
+		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+		grantedAuthorities.add(new SimpleGrantedAuthority(account.getRoleId().getRoleName()));
 
 		return new UserDetailsImpl(
 				account.getId(),
 				account.getUsername(),
 				account.getEmail(),
 				account.getPassword(),
-				authorities);
+				grantedAuthorities);
 	}
 
 	@Override

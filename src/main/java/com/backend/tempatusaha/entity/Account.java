@@ -46,11 +46,21 @@ public class Account {
     @Column(name = "address", columnDefinition = "TEXT")
     private String address;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "account_role",
-            joinColumns = @JoinColumn(name = "account_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> role = new HashSet<>();
+    @Column(name = "bank", length = 50)
+    private String bank;
+
+    @Column(name = "rekening", length = 50)
+    private String rekening;
+
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(	name = "account_role",
+//            joinColumns = @JoinColumn(name = "account_id"),
+//            inverseJoinColumns = @JoinColumn(name = "role_id"))
+//    private Set<Role> role = new HashSet<>();
+
+    @OneToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role roleId;
 
     @Column(name = "isaktif", nullable = false, columnDefinition = "integer default 1")
     private int isAktif;
