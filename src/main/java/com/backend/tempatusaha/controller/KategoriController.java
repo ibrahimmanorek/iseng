@@ -1,9 +1,7 @@
 package com.backend.tempatusaha.controller;
 
 import com.backend.tempatusaha.dto.request.KategoriRequest;
-import com.backend.tempatusaha.dto.request.VerifyEmailRequest;
-import com.backend.tempatusaha.service.AccountService;
-import com.backend.tempatusaha.service.KategoriService;
+import com.backend.tempatusaha.service.kategori.KategoriService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

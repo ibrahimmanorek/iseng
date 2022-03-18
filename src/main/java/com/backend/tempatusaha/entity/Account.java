@@ -52,6 +52,12 @@ public class Account {
     @Column(name = "rekening", length = 50)
     private String rekening;
 
+    @Column(name = "latitude", length = 50)
+    private String latitude;
+
+    @Column(name = "longitude", length = 50)
+    private String longitude;
+
 //    @ManyToMany(fetch = FetchType.LAZY)
 //    @JoinTable(	name = "account_role",
 //            joinColumns = @JoinColumn(name = "account_id"),

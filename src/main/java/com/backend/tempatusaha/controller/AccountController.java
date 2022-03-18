@@ -1,9 +1,11 @@
 package com.backend.tempatusaha.controller;
 
+import com.backend.tempatusaha.dto.request.SignUpRequest;
 import com.backend.tempatusaha.dto.request.VerifyEmailRequest;
-import com.backend.tempatusaha.service.AccountService;
+import com.backend.tempatusaha.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,15 +15,14 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/getAll")
-    public ResponseEntity<?> getAll(@RequestParam(value = "page", required = true) int page,
-                                    @RequestParam(value = "size", required = true) int size){
-        return ResponseEntity.ok().body(accountService.getAll(page, size));
+    @GetMapping("/getAccount")
+    public ResponseEntity<?> getAccountId(Authentication authentication){
+        return ResponseEntity.ok().body(accountService.getByAccountId(authentication));
     }
 
-    @GetMapping("/getAccountId/{id}")
-    public ResponseEntity<?> getAccountId(@PathVariable("id") long id){
-        return ResponseEntity.ok().body(accountService.getByAccountId(id));
+    @PostMapping("/update")
+    public ResponseEntity<?> update(Authentication authentication, @RequestBody SignUpRequest request){
+        return ResponseEntity.ok().body(accountService.update(authentication, request));
     }
 
     @PostMapping("/verify/email")

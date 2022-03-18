@@ -1,4 +1,4 @@
-package com.backend.tempatusaha.service;
+package com.backend.tempatusaha.service.kategori;
 
 import com.backend.tempatusaha.dto.request.KategoriRequest;
 import com.backend.tempatusaha.dto.response.Response;

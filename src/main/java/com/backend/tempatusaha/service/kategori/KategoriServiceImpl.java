@@ -1,4 +1,4 @@
-package com.backend.tempatusaha.service;
+package com.backend.tempatusaha.service.kategori;
 
 import com.backend.tempatusaha.dto.request.KategoriRequest;
 import com.backend.tempatusaha.dto.response.PageResponse;
@@ -6,7 +6,6 @@ import com.backend.tempatusaha.dto.response.Response;
 import com.backend.tempatusaha.entity.Kategori;
 import com.backend.tempatusaha.exception.ExceptionResponse;
 import com.backend.tempatusaha.repository.KategoriRepository;
-import com.backend.tempatusaha.service.KategoriService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

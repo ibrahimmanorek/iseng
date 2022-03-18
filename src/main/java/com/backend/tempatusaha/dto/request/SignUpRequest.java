@@ -18,4 +18,6 @@ public class SignUpRequest {
     private String address;
     private String phoneNumber;
     private Integer roleId;
+    private String bank;
+    private String rekening;
 }

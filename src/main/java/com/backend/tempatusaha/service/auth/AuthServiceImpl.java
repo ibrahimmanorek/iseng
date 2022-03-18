@@ -105,6 +105,8 @@ public class AuthServiceImpl implements AuthService {
                 .address(signUpRequest.getAddress())
                 .isAktif(0)
                 .roleId(Role.builder().id(signUpRequest.getRoleId()).build())
+                .rekening(signUpRequest.getRekening())
+                .bank(signUpRequest.getBank())
                 .build());
 
         Otp otp = otpRepository.save(Otp.builder()
@@ -129,8 +131,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Response login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
