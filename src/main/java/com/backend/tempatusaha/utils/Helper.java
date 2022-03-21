@@ -32,11 +32,10 @@ public class Helper {
     }
 
     public void sendMailForgotPassword(String emailTo, String emailFrom, String content) {
-        String link = "http://localhost:8085/be/auth/forgot/password?email=ibrahimmanorek91@gmail.com";
         String konten = "<p>Hello,</p>"
                 + "<p>You have requested to reset your password.</p>"
                 + "<p>Click the link below to change your password:</p>"
-                + "<p><a href=\"" + link + "\">Change my password</a></p>"
+                + "<p><a href=\"" + content + "\">Change my password</a></p>"
                 + "<br>"
                 + "<p>Ignore this email if you do remember your password, "
                 + "or you have not made the request.</p>";

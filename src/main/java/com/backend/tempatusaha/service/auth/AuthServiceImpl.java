@@ -11,9 +11,9 @@ import com.backend.tempatusaha.repository.OtpRepository;
 import com.backend.tempatusaha.repository.RoleRepository;
 import com.backend.tempatusaha.repository.SendEmailRepository;
 import com.backend.tempatusaha.security.jwt.JwtUtils;
-import com.backend.tempatusaha.service.email.MailService;
 import com.backend.tempatusaha.service.users.RefreshTokenService;
 import com.backend.tempatusaha.service.users.UserDetailsImpl;
+import com.backend.tempatusaha.utils.AesUtils;
 import com.backend.tempatusaha.utils.Constant;
 import com.backend.tempatusaha.utils.Helper;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +27,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -220,7 +218,13 @@ public class AuthServiceImpl implements AuthService {
         Account account = accountRepository.findByEmailAndIsAktif(email, 1).orElseThrow(() -> new ExceptionResponse("Email tidak ditemukan"));
 
         String url = servletRequest.getRequestURL().toString();
-        String emailBody = url + "?email="+ email;
+        String urlEncodedData = "";
+        try {
+            urlEncodedData = URLEncoder.encode(AesUtils.encrypt(email), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String emailBody = url + "?e="+ urlEncodedData;
         log.info(">>> {}", emailBody);
         sendEmailRepository.save(SendEmail.builder()
                 .emailTo(account.getEmail())
@@ -230,7 +234,6 @@ public class AuthServiceImpl implements AuthService {
                 .build());
 
         helper.sendMailForgotPassword(email, emailFrom, emailBody);
-
         return Response.builder()
                 .success(true)
                 .message("successfully")
