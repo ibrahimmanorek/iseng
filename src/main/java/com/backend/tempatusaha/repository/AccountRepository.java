@@ -14,6 +14,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByUsernameAndIsAktif(String username, int isaktif);
 
+    Optional<Account> findByEmailAndIsAktif(String username, int isaktif);
+
     Optional<Account> findByIdAndIsAktif(long id, int isaktif);
 
     Boolean existsByUsername(String username);

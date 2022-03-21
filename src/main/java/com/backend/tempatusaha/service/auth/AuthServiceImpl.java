@@ -1,8 +1,6 @@
 package com.backend.tempatusaha.service.auth;
 
-import com.backend.tempatusaha.dto.request.LoginRequest;
-import com.backend.tempatusaha.dto.request.RefreshTokenRequest;
-import com.backend.tempatusaha.dto.request.SignUpRequest;
+import com.backend.tempatusaha.dto.request.*;
 import com.backend.tempatusaha.dto.response.JwtResponse;
 import com.backend.tempatusaha.dto.response.Response;
 import com.backend.tempatusaha.dto.response.TokenRefreshResponse;
@@ -13,8 +11,10 @@ import com.backend.tempatusaha.repository.OtpRepository;
 import com.backend.tempatusaha.repository.RoleRepository;
 import com.backend.tempatusaha.repository.SendEmailRepository;
 import com.backend.tempatusaha.security.jwt.JwtUtils;
+import com.backend.tempatusaha.service.email.MailService;
 import com.backend.tempatusaha.service.users.RefreshTokenService;
 import com.backend.tempatusaha.service.users.UserDetailsImpl;
+import com.backend.tempatusaha.utils.Constant;
 import com.backend.tempatusaha.utils.Helper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,12 +64,15 @@ public class AuthServiceImpl implements AuthService {
     @Value("${spring.mail.username}")
     private String emailFrom;
 
+    @Autowired
+    private Helper helper;
+
     @Override
     public Response save(SignUpRequest signUpRequest) {
-        if(accountRepository.existsByUsername(signUpRequest.getUsername()))
+        if (accountRepository.existsByUsername(signUpRequest.getUsername()))
             throw new ExceptionResponse("username is already taken !!");
 
-        if(accountRepository.existsByEmail(signUpRequest.getEmail()))
+        if (accountRepository.existsByEmail(signUpRequest.getEmail()))
             throw new ExceptionResponse("email is already taken !!");
 
 //        Set<String> strRoles = signUpRequest.getRole();
@@ -97,6 +102,8 @@ public class AuthServiceImpl implements AuthService {
 //            }
 //        });
 
+        Role role = roleRepository.findByIdAndIsAktif(signUpRequest.getRoleId(), 1).orElseThrow(() -> new ExceptionResponse("Role tidak aktif"));
+
         Account account = accountRepository.save(Account.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
@@ -104,7 +111,7 @@ public class AuthServiceImpl implements AuthService {
                 .phoneNumber(signUpRequest.getPhoneNumber())
                 .address(signUpRequest.getAddress())
                 .isAktif(0)
-                .roleId(Role.builder().id(signUpRequest.getRoleId()).build())
+                .roleId(role)
                 .rekening(signUpRequest.getRekening())
                 .bank(signUpRequest.getBank())
                 .build());
@@ -112,15 +119,18 @@ public class AuthServiceImpl implements AuthService {
         Otp otp = otpRepository.save(Otp.builder()
                 .accountId(account)
                 .otp(Helper.randomString())
+                .tipeOtp(Constant.REGISTER)
                 .build());
 
         sendEmailRepository.save(SendEmail.builder()
                 .emailTo(signUpRequest.getEmail())
                 .emailFrom(emailFrom)
-                .tipeEmail("register")
+                .tipeEmail(Constant.REGISTER)
                 .accountId(account)
                 .otpId(otp)
                 .build());
+
+        helper.sendMail(signUpRequest.getEmail(), emailFrom, otp.getOtp());
 
         return Response.builder()
                 .success(true)
@@ -174,6 +184,32 @@ public class AuthServiceImpl implements AuthService {
                         .refreshToken(tokenRefresh)
                         .tokenType("Bearer")
                         .build())
+                .build();
+    }
+
+    @Override
+    public Response resendOtp(String email) {
+        Account account = accountRepository.findByEmailAndIsAktif(email, 0).orElseThrow(() -> new ExceptionResponse("Email tidak ditemukan"));
+
+        Otp otp = otpRepository.findByAccountIdAndFlagAndTipeOtp(account, 0, "register").orElseThrow(() -> new ExceptionResponse("Otp tidak ditemukan"));
+        otp.setOtp(Helper.randomString());
+        otp.setUpdatedDate(LocalDateTime.now());
+        otp.setCreatedDate(LocalDateTime.now());
+
+        sendEmailRepository.save(SendEmail.builder()
+                .emailTo(account.getEmail())
+                .emailFrom(emailFrom)
+                .tipeEmail(Constant.REGISTER)
+                .accountId(account)
+                .otpId(otp)
+                .build());
+
+        helper.sendMail(email, emailFrom, otp.getOtp());
+
+        return Response.builder()
+                .success(true)
+                .message("successfully")
+                .data(account)
                 .build();
     }
 }

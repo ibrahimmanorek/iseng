@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "otp",
         indexes = {
-                @Index(columnList = "flag")
+                @Index(columnList = "flag"),
+                @Index(columnList = "tipe_otp")
         })
 public class Otp {
     @Id
@@ -28,6 +29,9 @@ public class Otp {
 
     @Column(name = "otp", nullable = false, length = 6)
     private String otp;
+
+    @Column(name = "tipe_otp", nullable = false, length = 50)
+    private String tipeOtp;
 
     @Column(name = "flag", columnDefinition = "integer default 0")
     private int flag;

@@ -64,7 +64,7 @@ public class Account {
 //            inverseJoinColumns = @JoinColumn(name = "role_id"))
 //    private Set<Role> role = new HashSet<>();
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role roleId;
 
