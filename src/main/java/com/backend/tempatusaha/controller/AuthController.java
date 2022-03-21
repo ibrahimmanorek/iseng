@@ -1,13 +1,14 @@
 package com.backend.tempatusaha.controller;
 
-import com.backend.tempatusaha.dto.request.LoginRequest;
-import com.backend.tempatusaha.dto.request.RefreshTokenRequest;
-import com.backend.tempatusaha.dto.request.ResendOtpRequest;
-import com.backend.tempatusaha.dto.request.SignUpRequest;
+import com.backend.tempatusaha.dto.request.*;
 import com.backend.tempatusaha.service.auth.AuthService;
+import com.backend.tempatusaha.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -24,6 +25,21 @@ public class AuthController {
     @PostMapping("/resend/otp")
     public ResponseEntity<?> resendOtp(@RequestParam("email") String email){
         return ResponseEntity.ok().body(authService.resendOtp(email));
+    }
+
+    @GetMapping(Constant.Path.FORGOT_PASSWORD)
+    public ResponseEntity<?> getForgotPassword(@RequestParam("email") String email){
+        return ResponseEntity.ok().body(authService.getForgotPassword(email));
+    }
+
+    @PostMapping(Constant.Path.FORGOT_PASSWORD)
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email, HttpServletRequest servletRequest){
+        return ResponseEntity.ok().body(authService.forgotPassword(email, servletRequest));
+    }
+
+    @PostMapping("/forgot/password/update")
+    public ResponseEntity<?> forgotPasswordUpdate(@RequestBody ForgotPasswordRequest request){
+        return ResponseEntity.ok().body(authService.forgotPasswordUpdate(request));
     }
 
     @PostMapping("/login")

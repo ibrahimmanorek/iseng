@@ -26,6 +26,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -206,6 +208,53 @@ public class AuthServiceImpl implements AuthService {
 
         helper.sendMail(email, emailFrom, otp.getOtp());
 
+        return Response.builder()
+                .success(true)
+                .message("successfully")
+                .data(account)
+                .build();
+    }
+
+    @Override
+    public Response forgotPassword(String email, HttpServletRequest servletRequest) {
+        Account account = accountRepository.findByEmailAndIsAktif(email, 1).orElseThrow(() -> new ExceptionResponse("Email tidak ditemukan"));
+
+        String url = servletRequest.getRequestURL().toString();
+        String emailBody = url + "?email="+ email;
+        log.info(">>> {}", emailBody);
+        sendEmailRepository.save(SendEmail.builder()
+                .emailTo(account.getEmail())
+                .emailFrom(emailFrom)
+                .tipeEmail(Constant.PASSWORD)
+                .accountId(account)
+                .build());
+
+        helper.sendMailForgotPassword(email, emailFrom, emailBody);
+
+        return Response.builder()
+                .success(true)
+                .message("successfully")
+                .data(account)
+                .build();
+    }
+
+    @Override
+    public Response getForgotPassword(String email) {
+        log.info("masukk >>>");
+        return null;
+    }
+
+    @Override
+    public Response forgotPasswordUpdate(ForgotPasswordRequest request) {
+        Account account = accountRepository.findByEmailAndIsAktif(request.getEmail(), 1).orElseThrow(() -> new ExceptionResponse("Email tidak ditemukan"));
+        boolean isMatches = passwordEncoder.matches(request.getOldPassword(), account.getPassword());
+        if(!isMatches){
+            throw new ExceptionResponse("Password lama tidak sesuai");
+        }
+
+        account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        account.setUpdatedDate(LocalDateTime.now());
+        account = accountRepository.save(account);
         return Response.builder()
                 .success(true)
                 .message("successfully")

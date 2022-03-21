@@ -1,10 +1,9 @@
 package com.backend.tempatusaha.service.auth;
 
-import com.backend.tempatusaha.dto.request.LoginRequest;
-import com.backend.tempatusaha.dto.request.RefreshTokenRequest;
-import com.backend.tempatusaha.dto.request.ResendOtpRequest;
-import com.backend.tempatusaha.dto.request.SignUpRequest;
+import com.backend.tempatusaha.dto.request.*;
 import com.backend.tempatusaha.dto.response.Response;
+
+import javax.servlet.http.HttpServletRequest;
 
 public interface AuthService {
     Response save(SignUpRequest signUpRequest);
@@ -14,4 +13,10 @@ public interface AuthService {
     Response refreshToken(RefreshTokenRequest refreshTokenRequest);
 
     Response resendOtp(String email);
+
+    Response forgotPassword(String email, HttpServletRequest servletRequest);
+
+    Response getForgotPassword(String email);
+
+    Response forgotPasswordUpdate(ForgotPasswordRequest request);
 }
