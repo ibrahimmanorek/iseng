@@ -1,12 +1,12 @@
 package com.backend.tempatusaha.service.lapangan;
 
 import com.backend.tempatusaha.dto.request.DistanceRequest;
-import com.backend.tempatusaha.dto.request.LapanganRequest;
 import com.backend.tempatusaha.dto.response.PageResponse;
 import com.backend.tempatusaha.dto.response.Response;
 import com.backend.tempatusaha.entity.*;
 import com.backend.tempatusaha.exception.ExceptionResponse;
 import com.backend.tempatusaha.repository.*;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -30,6 +32,8 @@ public class LapanganServiceImpl implements LapanganService {
 
     @Value("${distance.value}")
     private String distance;
+
+    private Gson gson = new Gson();
 
     @Override
     public Response getAll(int page, int size) {
@@ -49,22 +53,54 @@ public class LapanganServiceImpl implements LapanganService {
     }
 
     @Override
-    public Response distance(Authentication authentication, int page, int size) {
-        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(() -> new ExceptionResponse("Akun Not Found"));
-        account = accountRepository.findByIdAndIsAktif(account.getId(), 1).orElseThrow(() -> new ExceptionResponse("Akun Tidak Aktif"));
+    public Response distance(Authentication authentication, DistanceRequest request, int page, int size) throws ExecutionException, InterruptedException {
+//        Account account = accountRepository.findByUsername(authentication.getName()).orElseThrow(() -> new ExceptionResponse("Akun Not Found"));
+//        account = accountRepository.findByIdAndIsAktif(account.getId(), 1).orElseThrow(() -> new ExceptionResponse("Akun Tidak Aktif"));
+
+        CompletableFuture<Account> future1 = findUsername(authentication.getName());
+        CompletableFuture<Account> future2 = findAccountIsAktif(1);
+        Account account = future2.get();
+
         int totalPage = page * 10;
-        int totalData = lapanganRepository.findCountLapanganWithDistance(account.getLatitude(), account.getLongitude(), distance);
-        List<Lapangan> lapanganPage = lapanganRepository.findLapanganWithInDistance(account.getLatitude(), account.getLongitude(), distance, totalPage, size);
+        CompletableFuture<Integer> future3 = findCountLapanganWithDistance(request, distance);
+        CompletableFuture<List<Lapangan>> future4 = findLapanganWithInDistance(request, distance, totalPage, size);
+
+//        int totalData = lapanganRepository.findCountLapanganWithDistance(account.getLatitude(), account.getLongitude(), distance);
+//        List<Lapangan> lapanganPage = lapanganRepository.findLapanganWithInDistance(account.getLatitude(), account.getLongitude(), distance, totalPage, size);
         PageResponse pageResponse = PageResponse.builder()
-                .totalAllData(totalData)
+                .totalAllData(future3.get().intValue())
                 .totalPage(page)
                 .currentPage(page + 1)
-                .details(lapanganPage)
+                .details(future4.get())
                 .build();
         return Response.builder()
                 .success(true)
                 .message("successfully")
                 .data(pageResponse)
                 .build();
+    }
+
+    CompletableFuture<Account> findUsername(String username) {
+        return CompletableFuture.supplyAsync(() -> {
+            return accountRepository.findByUsername(username).orElseThrow(() -> new ExceptionResponse("username not found"));
+        });
+    }
+
+    CompletableFuture<Account> findAccountIsAktif(long id) {
+        return CompletableFuture.supplyAsync(() -> {
+            return accountRepository.findByIdAndIsAktif(id, 1).orElseThrow(() -> new ExceptionResponse("akun tidak aktif"));
+        });
+    }
+
+    CompletableFuture<Integer> findCountLapanganWithDistance(DistanceRequest request, String distance){
+        return CompletableFuture.supplyAsync(() -> {
+           return lapanganRepository.findCountLapanganWithDistance(request.getLatitude(), request.getLongitude(), distance);
+        });
+    }
+
+    CompletableFuture<List<Lapangan>> findLapanganWithInDistance(DistanceRequest request, String distance, int totalPage, int size){
+        return CompletableFuture.supplyAsync(() -> {
+            return lapanganRepository.findLapanganWithInDistance(request.getLatitude(), request.getLongitude(), distance, totalPage, size);
+        });
     }
 }

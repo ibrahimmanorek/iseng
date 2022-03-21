@@ -12,17 +12,20 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "refreshtoken")
+@Entity
+@Table(name = "refresh_token", indexes = {
+        @Index(columnList = "token")
+})
 public class RefreshToken {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "account_id", referencedColumnName = "id")
   private Account accountId;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String token;
 
   @Column(nullable = false)

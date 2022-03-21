@@ -31,7 +31,7 @@ public class AccountServiceImpl implements AccountService {
         return Response.builder()
                 .success(true)
                 .message("successfully")
-                .data(accountRepository.findById(account.getId()))
+                .data(account)
                 .build();
     }
 
