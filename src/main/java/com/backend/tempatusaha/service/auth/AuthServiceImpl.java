@@ -142,7 +142,7 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
         return Response.builder()
                 .success(false)
-                .message("login sukses !!")
+                .message("successfully")
                 .data(JwtResponse.builder()
                         .token(jwt)
                         .refreshToken(refreshToken.getToken())
@@ -168,7 +168,7 @@ public class AuthServiceImpl implements AuthService {
 
         return Response.builder()
                 .success(true)
-                .message("login sukses !!")
+                .message("successfully")
                 .data(TokenRefreshResponse.builder()
                         .accessToken(refreshTokenRequest.getRefreshToken())
                         .refreshToken(tokenRefresh)
