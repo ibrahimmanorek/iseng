@@ -1,9 +1,11 @@
 package com.backend.tempatusaha.repository;
 
-import com.backend.tempatusaha.entity.Lapangan;
+import com.backend.tempatusaha.entity.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +22,7 @@ public interface LapanganRepository extends JpaRepository<Lapangan, Long> {
 
     Optional<Lapangan> findByPropinsiIdAndKotaIdAndKecamatanIdAndIsaktif(long propinsiId, long kotaId, long kecamatanId, int isaktif);
 
-    Optional<Lapangan> findByPropinsiIdAndKotaIdAndKecamatanIdAndKelurahanIdAndIsaktif(long propinsiId, long kotaId, long kecamatanId, long kelurahanId, int isaktif);
+    Page<Lapangan> findByPropinsiIdOrKotaIdOrKecamatanIdOrKelurahanIdAndIsaktif(Propinsi propinsi, Kota kota, Kecamatan kecamatan, Kelurahan kelurahan, int isaktif, Pageable pageable);
 
     String HAVERSINE_PART = "(6371 * acos(cos(radians(:latitude)) * cos(radians(s.latitude)) *" +
             " cos(radians(s.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(s.latitude))))";

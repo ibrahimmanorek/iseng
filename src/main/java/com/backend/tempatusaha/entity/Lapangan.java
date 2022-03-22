@@ -1,5 +1,6 @@
 package com.backend.tempatusaha.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,14 +29,17 @@ public class Lapangan {
     @JoinColumn(name = "kategori_id", referencedColumnName = "id")
     private Kategori kategoriId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "propinsi_id", referencedColumnName = "id")
     private Propinsi propinsiId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "kota_id", referencedColumnName = "id")
     private Kota kotaId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "kecamatan_id", referencedColumnName = "id")
     private Kecamatan kecamatanId;

@@ -1,6 +1,7 @@
 package com.backend.tempatusaha.controller;
 
 import com.backend.tempatusaha.dto.request.DistanceRequest;
+import com.backend.tempatusaha.dto.request.WilayahRequest;
 import com.backend.tempatusaha.service.lapangan.LapanganService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +29,13 @@ public class LapanganController {
                                       @RequestParam(value = "page", required = true) int page,
                                       @RequestParam(value = "size", required = true) int size) throws ExecutionException, InterruptedException {
         return ResponseEntity.ok().body(lapanganService.distance(authentication, request, page, size));
+    }
+
+    @PostMapping("/wilayah")
+    public ResponseEntity<?> wilayah(Authentication authentication,
+                                     @RequestBody WilayahRequest request,
+                                      @RequestParam(value = "page", required = true) int page,
+                                      @RequestParam(value = "size", required = true) int size) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(lapanganService.wilayah(authentication, request, page, size));
     }
 }

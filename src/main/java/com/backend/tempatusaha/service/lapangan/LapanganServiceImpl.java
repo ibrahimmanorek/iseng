@@ -1,6 +1,7 @@
 package com.backend.tempatusaha.service.lapangan;
 
 import com.backend.tempatusaha.dto.request.DistanceRequest;
+import com.backend.tempatusaha.dto.request.WilayahRequest;
 import com.backend.tempatusaha.dto.response.PageResponse;
 import com.backend.tempatusaha.dto.response.Response;
 import com.backend.tempatusaha.entity.*;
@@ -29,6 +30,9 @@ public class LapanganServiceImpl implements LapanganService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private KelurahanRepository kelurahanRepository;
 
     @Value("${distance.value}")
     private String distance;
@@ -102,5 +106,28 @@ public class LapanganServiceImpl implements LapanganService {
         return CompletableFuture.supplyAsync(() -> {
             return lapanganRepository.findLapanganWithInDistance(request.getLatitude(), request.getLongitude(), distance, totalPage, size);
         });
+    }
+
+    @Override
+    public Response wilayah(Authentication authentication, WilayahRequest request, int page, int size) {
+        Propinsi propinsi = Propinsi.builder().id(request.getPropinsiId()).build();
+        Kota kota = Kota.builder().id(request.getKotaId()).build();
+        Kecamatan kecamatan = Kecamatan.builder().id(request.getKecamatanId()).build();
+        Kelurahan kelurahan = Kelurahan.builder().id(request.getKelurahanId()).build();
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Lapangan> lapanganPage = lapanganRepository.findByPropinsiIdOrKotaIdOrKecamatanIdOrKelurahanIdAndIsaktif(propinsi, kota, kecamatan, kelurahan, 1, pageable);
+
+        PageResponse pageResponse = PageResponse.builder()
+                .totalAllData(lapanganPage.getTotalElements())
+                .totalPage(page)
+                .currentPage(page + 1)
+                .details(lapanganPage.getContent())
+                .build();
+        return Response.builder()
+                .success(true)
+                .message("successfully")
+                .data(pageResponse)
+                .build();
     }
 }
