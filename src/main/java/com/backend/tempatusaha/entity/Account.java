@@ -40,7 +40,7 @@ public class Account {
     @Column(name = "email", nullable = false, length = 150)
     private String email;
 
-    @Column(name = "phone_number", nullable = false, length = 15)
+    @Column(name = "phone_number", length = 15)
     private String phoneNumber;
 
     @Column(name = "address", columnDefinition = "TEXT")
@@ -67,6 +67,9 @@ public class Account {
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role roleId;
+
+    @Column(name = "provider_login", length = 100)
+    private String providerLogin;
 
     @Column(name = "isaktif", nullable = false, columnDefinition = "integer default 1")
     private int isAktif;

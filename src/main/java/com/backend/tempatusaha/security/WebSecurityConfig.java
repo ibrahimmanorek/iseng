@@ -4,6 +4,7 @@ import com.backend.tempatusaha.security.jwt.AuthEntryPointJwt;
 import com.backend.tempatusaha.security.jwt.AuthTokenFilter;
 import com.backend.tempatusaha.service.users.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,22 +52,43 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Autowired
+	@Qualifier("oauth2authSuccessHandler")
+	private AuthenticationSuccessHandler oauth2authSuccessHandler;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable()
-				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authorizeRequests()
-				.antMatchers("/be/auth/**").permitAll()
-				.antMatchers("/be/images/download/**").permitAll()
-				.antMatchers("/be/images/view/**").permitAll()
-				.anyRequest().authenticated();
+//		http.cors().and().csrf().disable()
+////				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+////				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+//				.authorizeRequests()
+//				.antMatchers("/**").permitAll()
+////				.antMatchers("/auth/**").permitAll()
+////				.antMatchers("/images/download/**").permitAll()
+////				.antMatchers("/images/view/**").permitAll()
+//				.and()
+//				.oauth2Login()
+//				.defaultSuccessUrl("/home");
 
-		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.cors().and().csrf().disable()
+				.authorizeRequests()
+				.antMatchers("/auth/**").permitAll()
+				.antMatchers("/login/**").permitAll()
+				.anyRequest().authenticated()
+				.and()
+				.logout().logoutUrl("/logout").logoutSuccessUrl("/login")
+				.and()
+				.oauth2Login()
+				.successHandler(oauth2authSuccessHandler)
+				.defaultSuccessUrl("/home").and()
+				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
+
+//		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/be/v2/api-docs", "/be/configuration/ui", "/be/swagger-resources", "/be/configuration/security", "/be/swagger-ui.html", "/be/webjars/**");
 	}
+
 }

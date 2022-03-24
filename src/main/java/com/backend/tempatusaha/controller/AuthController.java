@@ -60,8 +60,6 @@ public class AuthController {
     @GetMapping(value = "/encrypt")
     public String encrypt(@RequestParam String email) throws Exception {
         log.info(">>> {}", email);
-//        String[] encrypted = AesUtils.encryptObject(email);
-//        return encrypted[0];
         String urlEncodedData = URLEncoder.encode(AesUtils.encrypt(email), "UTF-8");
         return urlEncodedData;
     }

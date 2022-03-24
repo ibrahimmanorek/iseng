@@ -1,16 +1,10 @@
 package com.backend.tempatusaha.security.jwt;
 
 import com.backend.tempatusaha.dto.response.Response;
-import com.backend.tempatusaha.exception.ExceptionResponse;
-import com.backend.tempatusaha.exception.UnauthorizedException;
 import com.backend.tempatusaha.service.users.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,8 +18,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -41,22 +33,29 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         final HttpServletResponse res = (HttpServletResponse) response;
         try {
             String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
+            if (jwt != null) {
+                if(jwtUtils.validateJwtToken(jwt)){
+                    String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-                        userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                            userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                responseAuth(res, "Unauthorized");
+                return;
             }
+
         } catch (Exception e) {
             log.error("Cannot set user authentication: {}", e.getMessage());
             responseAuth(res, e.getMessage());
             return;
         }
-
         filterChain.doFilter(request, response);
     }
 
@@ -80,7 +79,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                     .build();
             res.setContentType("application/json");
             res.getWriter().write(objectMapper.writeValueAsString(response));
-            res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("error : {}", e.getMessage());

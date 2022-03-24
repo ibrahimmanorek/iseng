@@ -114,6 +114,7 @@ public class AuthServiceImpl implements AuthService {
                 .roleId(role)
                 .rekening(signUpRequest.getRekening())
                 .bank(signUpRequest.getBank())
+                .providerLogin(Constant.ProviderLogin.API)
                 .build());
 
         Otp otp = otpRepository.save(Otp.builder()
@@ -180,8 +181,8 @@ public class AuthServiceImpl implements AuthService {
                 .success(true)
                 .message("successfully")
                 .data(TokenRefreshResponse.builder()
-                        .accessToken(refreshTokenRequest.getRefreshToken())
-                        .refreshToken(tokenRefresh)
+                        .accessToken(tokenRefresh)
+                        .refreshToken(refreshTokenRequest.getRefreshToken())
                         .tokenType("Bearer")
                         .build())
                 .build();
